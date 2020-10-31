@@ -1,6 +1,6 @@
 package by.bsuir.Kulinka.model;
 
-import by.bsuir.Kulinka.model.entity.Service;
+import by.bsuir.Kulinka.model.entity.abonents.Service;
 
 import java.util.List;
 
