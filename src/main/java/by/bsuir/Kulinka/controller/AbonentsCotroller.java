@@ -1,12 +1,9 @@
 package by.bsuir.Kulinka.controller;
 
-import by.bsuir.Kulinka.interfaces.PlanRepository;
-import by.bsuir.Kulinka.model.entity.Abonent;
-import by.bsuir.Kulinka.interfaces.AbonentRepository;
+import by.bsuir.Kulinka.interfaces.abonents.AbonentRepository;
+import by.bsuir.Kulinka.model.entity.abonents.Abonent;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,7 +14,7 @@ public class AbonentsCotroller
     @Autowired
     AbonentRepository abonentRepository;
     //------------------------------------------------------------------------------------------------------------------
-    @GetMapping(path = "/getAbons")
+    @GetMapping(path = "/abonents")
     public List<Abonent> getAllAbons()
     {
         return abonentRepository.findAll();
@@ -26,4 +23,33 @@ public class AbonentsCotroller
     //@GetMapping
     //@Query(value = "", nativeQuery = true)
     //public
+    //------------------------------------------------------------------------------------------------------------------
+    //Создать абонента
+    @PostMapping(path = "/abonent/create")
+    public Abonent createAbonent(@RequestBody Abonent abonent)
+    {
+        return abonentRepository.save(abonent);
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    //Обновить абонента
+    @PutMapping(path = "abonent/update")
+    public Abonent updateAbonent(@RequestBody Abonent abonent)
+    {
+        return abonentRepository.save(abonent);
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    //Удалить абонента
+    @DeleteMapping(path = "abonent/delete")
+    public int deleteAbonent(@RequestParam(name = "abonid") int id)
+    {
+        try
+        {
+            abonentRepository.deleteById(id);
+        } catch (Exception ex)
+        {
+            return -1;
+        }
+        return id;
+    }
+    //------------------------------------------------------------------------------------------------------------------
 }

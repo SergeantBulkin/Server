@@ -1,4 +1,4 @@
-package by.bsuir.Kulinka.model.entity;
+package by.bsuir.Kulinka.model.entity.abonents;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -19,7 +19,7 @@ public class Abonent
     private int plan_id;
     private float balance;
     private String address;
-    private Date create_date;
+    private String create_date;
     //------------------------------------------------------------------------------------------------------------------
     public Abonent()
     {
@@ -106,12 +106,12 @@ public class Abonent
         this.address = address;
     }
 
-    public Date getCreate_date()
+    public String getCreate_date()
     {
         return create_date;
     }
 
-    public void setCreate_date(Date create_date)
+    public void setCreate_date(String create_date)
     {
         this.create_date = create_date;
     }

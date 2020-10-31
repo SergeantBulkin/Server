@@ -1,12 +1,12 @@
 package by.bsuir.Kulinka.controller;
 
-import by.bsuir.Kulinka.interfaces.PlanRepository;
-import by.bsuir.Kulinka.interfaces.PlanServiceRepository;
-import by.bsuir.Kulinka.interfaces.ServiceRepository;
+import by.bsuir.Kulinka.interfaces.abonents.PlanRepository;
+import by.bsuir.Kulinka.interfaces.abonents.PlanServiceRepository;
+import by.bsuir.Kulinka.interfaces.abonents.ServiceRepository;
 import by.bsuir.Kulinka.model.PlanInfo;
-import by.bsuir.Kulinka.model.entity.Plan;
-import by.bsuir.Kulinka.model.entity.PlanService;
-import by.bsuir.Kulinka.model.entity.Service;
+import by.bsuir.Kulinka.model.entity.abonents.Plan;
+import by.bsuir.Kulinka.model.entity.abonents.PlanService;
+import by.bsuir.Kulinka.model.entity.abonents.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,6 +63,73 @@ public class PlanController
         return new PlanInfo(plan.getId(), plan.getPlan_name(), services, countPlanCost(services));
     }
     //------------------------------------------------------------------------------------------------------------------
+    //Создать новый план
+    @PostMapping(path = "/plan/add")
+    public PlanInfo createPlan(@RequestBody PlanInfo planInfo)
+    {
+        //Создать план с таким же названием
+        Plan plan = addPlan(new Plan(planInfo.getName()));
+        //Запомнить id созданного плана
+        planInfo.setPlan_id(plan.getId());
+        //Создать записи в таблице plan_info
+        for (Service service : planInfo.getServices())
+        {
+            addPlanService(new PlanService(plan.getId(), service.getId()));
+        }
+        return planInfo;
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    //Обновить тарифный план
+    @PutMapping(path = "/plan/update")
+    public PlanInfo updatePlan(@RequestBody PlanInfo planInfo)
+    {
+        //Удалить связанные с планом записи в таблице plan_info
+        deletePlanServices(planInfo.getPlan_id());
+
+        //Создать план для обновления в таблице plan
+        Plan plan = new Plan(planInfo.getName());
+        plan.setId(planInfo.getPlan_id());
+
+        //Создать новые записи в таблице plan_service
+        for (Service service : planInfo.getServices())
+        {
+            planServiceRepository.save(new PlanService(planInfo.getPlan_id(), service.getId()));
+        }
+
+        //Создать и вернуть созданный план
+        planRepository.save(plan);
+        return planInfo;
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    //Удалить тарифный план
+    @DeleteMapping(path = "/plan/delete")
+    public int deletePlan(@RequestParam(name = "planid") int planid)
+    {
+        //Удалить связанные с планом записи в таблице plan_info
+        deletePlanServices(planid);
+
+        try
+        {
+            planRepository.deleteById(planid);
+        } catch (Exception ex)
+        {
+            return -1;
+        }
+        return planid;
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    //Добавить запись в таблицу plan
+    private Plan addPlan(Plan plan)
+    {
+        return planRepository.save(plan);
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    //Добавить запись в таблицу plan_service
+    private void addPlanService(PlanService planService)
+    {
+        planServiceRepository.save(planService);
+    }
+    //------------------------------------------------------------------------------------------------------------------
     //Получить список услуг, которые есть в указанном тарифе
     private List<Service> getPlanServices(int plan_id)
     {
@@ -91,33 +158,15 @@ public class PlanController
         return serviceRepository.getOne(service_id);
     }
     //------------------------------------------------------------------------------------------------------------------
-    //Создать новый план
-    @PostMapping(path = "/plan/add")
-    public PlanInfo createPlan(@RequestBody PlanInfo planInfo)
+    //Удалить все записи из таблицы plan_service по id плана
+    private void deletePlanServices(int planID)
     {
-        Plan plan = addPlan(new Plan(planInfo.getName()));
-        planInfo.setPlan_id(plan.getId());
-        for (Service service : planInfo.getServices())
+        List<PlanService> planServicesToDelete = planServiceRepository.getPlanServiceByPlanID(planID);
+
+        for (PlanService planService : planServicesToDelete)
         {
-            addPlanService(new PlanService(plan.getId(), service.getId()));
+            planServiceRepository.deleteById(planService.getId());
         }
-        return planInfo;
     }
-    //------------------------------------------------------------------------------------------------------------------
-    //Добавить запись в таблицу plan
-    private Plan addPlan(Plan plan)
-    {
-        return planRepository.save(plan);
-    }
-    //------------------------------------------------------------------------------------------------------------------
-    //Добавить запись в таблицу plan_service
-    private void addPlanService(PlanService planService)
-    {
-        planServiceRepository.save(planService);
-    }
-    //------------------------------------------------------------------------------------------------------------------
-
-    //------------------------------------------------------------------------------------------------------------------
-
     //------------------------------------------------------------------------------------------------------------------
 }

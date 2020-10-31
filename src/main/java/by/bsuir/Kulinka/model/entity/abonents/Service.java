@@ -1,4 +1,4 @@
-package by.bsuir.Kulinka.model.entity;
+package by.bsuir.Kulinka.model.entity.abonents;
 
 import javax.persistence.*;
 

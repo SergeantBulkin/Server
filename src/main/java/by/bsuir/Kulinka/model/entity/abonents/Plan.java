@@ -1,29 +1,28 @@
-package by.bsuir.Kulinka.model.entity;
+package by.bsuir.Kulinka.model.entity.abonents;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "plan_service")
-public class PlanService
+@Table(name = "plan")
+public class Plan
 {
     //------------------------------------------------------------------------------------------------------------------
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private int plan_id;
-    private int service_id;
+    private String plan_name;
     //------------------------------------------------------------------------------------------------------------------
-    public PlanService()
+    public Plan()
     {
 
     }
 
-    public PlanService(int plan_id, int service_id)
+    public Plan(String plan_name)
     {
-        this.plan_id = plan_id;
-        this.service_id = service_id;
+        this.plan_name = plan_name;
     }
+
     //------------------------------------------------------------------------------------------------------------------
     public int getId()
     {
@@ -35,24 +34,15 @@ public class PlanService
         this.id = id;
     }
 
-    public int getPlan_id()
+    public String getPlan_name()
     {
-        return plan_id;
+        return plan_name;
     }
 
-    public void setPlan_id(int plan_id)
+    public void setPlan_name(String plan_name)
     {
-        this.plan_id = plan_id;
-    }
-
-    public int getService_id()
-    {
-        return service_id;
-    }
-
-    public void setService_id(int service_id)
-    {
-        this.service_id = service_id;
+        this.plan_name = plan_name;
     }
     //------------------------------------------------------------------------------------------------------------------
 }
+
