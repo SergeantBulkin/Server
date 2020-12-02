@@ -37,16 +37,11 @@ public class QuizController
 
         //Получить список вопросов категории
         List<QuestionDB> questionDBS = questionRepository.findAllFromCategory(category_id);
-        System.out.println("Количество вопросов - " + questionDBS.size());
+
         //Наполнить новый список ответов
         for (QuestionDB questionDB : questionDBS)
         {
             List<Answer> answerList = getAnswersFromQuestion(questionDB);
-            for (Answer answer : answerList)
-            {
-                System.out.println("Ответ - " + answer.getIsCorrect() + " | " + answer.getAnswerText());
-            }
-            System.out.println("Количество ответов - " + answerList.size());
             Question question = new Question(questionDB.getQuestion_text(), answerList);
             questions.add(question);
         }
